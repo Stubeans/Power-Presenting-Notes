@@ -24,7 +24,9 @@ def inputWindow():
             [sg.Button('Fade'), sg.Button('Debug Button')],
             [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
             [sg.Text('Debug', key='Debug')],
-            [sg.Sizegrip()]  ]
+            [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
+            [sg.Sizegrip()]]
+            
 
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
@@ -42,6 +44,8 @@ def inputWindow():
             counter += 1
         elif event == 'Debug Button': # Reads the value from the first line of the file and displays it in the Debug text NOT FUNCTIONAL
             window['Debug'].update(readFromFile("myfile.txt"))
+        elif event == "Submit":
+            print(values["-IN-"])
         elif event == 'Read Note':
             window.close()
             return "Read Note"
