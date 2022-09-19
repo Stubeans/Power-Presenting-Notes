@@ -21,10 +21,11 @@ def inputWindow():
 
     # All the stuff inside your window.
     layout = [  [sg.Text('Title:'), sg.InputText(size=(30)), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note')],
-                [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50, 20)), sg.Button('->')],
-                [sg.Button('Fade'), sg.Button('Debug Button')],
-                [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
-                [sg.Text('Debug', key='Debug')] ]
+            [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
+            [sg.Button('Fade'), sg.Button('Debug Button')],
+            [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
+            [sg.Text('Debug', key='Debug')],
+            [sg.Sizegrip()]  ]
 
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
@@ -57,7 +58,8 @@ def outputWindow():
     # All the stuff inside your window.
     layout = [  [sg.Text('NOTES:')],
                 [sg.Button('<-'), sg.Output(size=(50, 20)), sg.Button('->')],
-                [sg.Button('Return'), sg.Button('Fade'), sg.Push(), sg.Button('Close')]]
+                [sg.Button('Return'), sg.Button('Fade'), sg.Push(), sg.Button('Close')],
+                [sg.Sizegrip()]]
 
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = True, finalize = True)
