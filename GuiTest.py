@@ -1,6 +1,7 @@
 from fileinput import filename
 from turtle import position
 import PySimpleGUI as sg
+
 def writeToFile(fileName, myString):
     #f = open(fileName, "w")
     f = open(fileName, "a")
@@ -15,7 +16,7 @@ def readFromFile(fileName):
 def inputWindow():
     counter = 0
     transparencyOptions = [0.75, 0.5, 1]
-
+    
     sg.theme('Reddit')   # Add a touch of color
 
     # All the stuff inside your window.
@@ -36,7 +37,7 @@ def inputWindow():
         if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
             break
         elif event == 'Save': # saves the value in the text input into a file
-            print('You entered Title: ' + values[0] + ' and contens: ' + values['TextInput'])
+            print('You entered Title: ' + values[0] + ' and contents: ' + values['TextInput'])
             writeToFile("myfile.txt", values[0] + "!$")
             writeToFile("myfile.txt", values['TextInput'] + "!$END!$")
         elif event == 'Fade': # Runs through fade options on a button loop
@@ -55,7 +56,7 @@ def inputWindow():
 def outputWindow():
     counter = 0
     transparencyOptions = [0.75, 0.5, 1]
-
+    
     sg.theme('Reddit')   # Add a touch of color
 
     # All the stuff inside your window.
@@ -87,4 +88,3 @@ def main():
             main()
 
 main()
-
