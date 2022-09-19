@@ -21,11 +21,13 @@ def inputWindow():
 
     # All the stuff inside your window.
     layout = [  [sg.Text('Title:'), sg.InputText(size=(30)), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note')],
-                [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
-                [sg.Button('Fade'), sg.Button('Debug Button')],
-                [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
-                [sg.Text('Debug', key='Debug')],
-                [sg.Sizegrip()]  ]
+            [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
+            [sg.Button('Fade'), sg.Button('Debug Button')],
+            [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
+            [sg.Text('Debug', key='Debug')],
+            [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
+            [sg.Sizegrip()]]
+            
 
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
@@ -43,6 +45,8 @@ def inputWindow():
             counter += 1
         elif event == 'Debug Button': # Reads the value from the first line of the file and displays it in the Debug text NOT FUNCTIONAL
             window['Debug'].update(readFromFile("myfile.txt"))
+        elif event == "Submit":
+            print(values["-IN-"])
         elif event == 'Read Note':
             window.close()
             return "Read Note"
