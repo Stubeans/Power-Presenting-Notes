@@ -22,9 +22,8 @@ def inputWindow():
     # All the stuff inside your window.
     layout = [  [sg.Text('Title:'), sg.InputText(size=(30)), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note')],
                 [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50, 20)), sg.Button('->')],
-                [sg.Button('Fade'), sg.Button('Debug Button')],
-                [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
-                [sg.Text('Debug', key='Debug')] ]
+                [sg.Button('Fade')],
+                [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')]]
 
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
@@ -40,11 +39,9 @@ def inputWindow():
         elif event == 'Fade': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
-        elif event == 'Debug Button': # Reads the value from the first line of the file and displays it in the Debug text NOT FUNCTIONAL
-            window['Debug'].update(readFromFile("myfile.txt"))
         elif event == 'Read Note':
             window.close()
-            return "Read Note"
+            outputWindow()
 
     window.close()
 
@@ -68,17 +65,11 @@ def outputWindow():
             break
         elif event == 'Return': # Returns to the inputWindow
             window.close()
-            return "Return"
+            inputWindow()
         elif event == 'Fade': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
 
     window.close()
 
-def main():
-    print("main")
-    if(inputWindow() == "Read Note"):
-        if(outputWindow() == "Return"):
-            main()
-
-main()
+inputWindow()
