@@ -13,6 +13,28 @@ def readFromFile(fileName):
     text = f.readline()
     return text
 
+def mainMenu():
+    sg.theme('Reddit')   # Add a touch of color
+
+    # All the stuff inside your window.
+    layout = [  [sg.Text('Welcome to Power Presenting Notes!')],
+            [sg.Button('Start')],
+            [sg.Sizegrip()]]
+            
+
+    # Create the Window
+    window = sg.Window('Power Presenting Notes', layout, element_justification='c', icon="PPN.ico", keep_on_top = False, finalize = True)
+    # Event Loop to process "events" and get the "values" of the inputs
+    while True:
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
+            break
+        elif event == 'Start':
+            window.close()
+            inputWindow()
+
+    window.close()
+
 def inputWindow():
     counter = 0
     transparencyOptions = [0.75, 0.5, 1]
@@ -20,7 +42,7 @@ def inputWindow():
     sg.theme('Reddit')   # Add a touch of color
 
     # All the stuff inside your window.
-    layout = [  [sg.Text('Title:'), sg.InputText(size=(30)), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note')],
+    layout = [  [sg.Text('Title:'), sg.InputText(size=(30)), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), sg.Button('Options')],
             [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
             [sg.Button('Fade'), sg.Button('Debug Button')],
             [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
@@ -47,9 +69,15 @@ def inputWindow():
             window['Debug'].update(readFromFile("myfile.txt"))
         elif event == "Submit":
             print(values["-IN-"])
+        elif event == "Options":
+            choice, _ = sg.Window('Settings', [[sg.T('Would you like to return?')], [sg.Yes(s=10), sg.No(s=10)]], disable_close=True).read(close=True)
+            if(choice == "Yes"):
+                print("answer was yes")
+            elif(choice == "No"):
+                print("answer was no")
         elif event == 'Read Note':
             window.close()
-            return "Read Note"
+            outputWindow()
 
     window.close()
 
@@ -74,17 +102,11 @@ def outputWindow():
             break
         elif event == 'Return': # Returns to the inputWindow
             window.close()
-            return "Return"
+            inputWindow()
         elif event == 'Fade': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
 
     window.close()
 
-def main():
-    print("main")
-    if(inputWindow() == "Read Note"):
-        if(outputWindow() == "Return"):
-            main()
-
-main()
+mainMenu()
