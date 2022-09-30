@@ -40,19 +40,25 @@ def inputWindow():
     transparencyOptions = [0.75, 0.5, 1]
     
     sg.theme('Reddit')   # Add a touch of color
+    
+    # list of  items in the dropdown menu
+    selection = ('Opacity', 'Timer', 'Theme', 'Font', 'Font Size', 'Speech to Text') 
 
     # All the stuff inside your window.
-    layout = [  [sg.Text('Title:'), sg.InputText(size=(30)), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), sg.Button('Options')],
-            [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
-            [sg.Button('Fade'), sg.Button('Debug Button')],
-            [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
-            [sg.Text('Debug', key='Debug')],
-            [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
-            [sg.Sizegrip()]]
+    layout = [  
+        [sg.Text('Title:'), sg.InputText(size=(30)), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), sg.Combo(selection, enable_events=True, key='-COMBO-', default_value= 'Options')],
+        [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
+        [sg.Button('Fade'), sg.Button('Debug Button')],
+        [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
+        [sg.Text('Debug', key='Debug')],
+        [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
+        [sg.Sizegrip()]
+        ]
             
 
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
+    
     # Event Loop to process "events" and get the "values" of the inputs
     while True:
         event, values = window.read()
@@ -69,12 +75,14 @@ def inputWindow():
             window['Debug'].update(readFromFile("myfile.txt"))
         elif event == "Submit":
             print(values["-IN-"])
-        elif event == "Options":
-            choice, _ = sg.Window('Settings', [[sg.T('Would you like to return?')], [sg.Yes(s=10), sg.No(s=10)]], disable_close=True).read(close=True)
-            if(choice == "Yes"):
-                print("answer was yes")
-            elif(choice == "No"):
-                print("answer was no")
+        elif event == "Opacity":
+            window.set_alpha(transparencyOptions[counter%3])
+            counter += 1
+            #choice, _ = sg.Window('Settings', [[sg.T('Would you like to return?')], [sg.Yes(s=10), sg.No(s=10)]], disable_close=True).read(close=True)
+            #if(choice == "Yes"):
+                #print("answer was yes")
+            #elif(choice == "No"):
+                #print("answer was no")
         elif event == 'Read Note':
             window.close()
             outputWindow()
