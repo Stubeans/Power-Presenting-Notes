@@ -1,17 +1,32 @@
-from fileinput import filename
 from turtle import position
 import PySimpleGUI as sg
 
-def writeToFile(fileName, myString):
+def writeToFile(fileName, title, body):
     #f = open(fileName, "w")
     f = open(fileName, "a")
-    f.write(myString)
+    f.write("\n$S$\n"+ title + "\n")
+    f.write(body)
     f.close()
 
 def readFromFile(fileName):
     f = open(fileName, "r")
-    text = f.readline()
+    text = f.readlines()
+    returnText = list[str]
+    print("begin")
+    for x in range(0, len(text)):
+        if text[x].strip() == "$S$":
+            returnText = recursiveText(text, x+1)
+            return returnText
     return text
+
+def recursiveText(text, begin):
+    if begin != len(text)-1:
+        if text[begin + 1] == "$S$":
+            return text
+        elif 0 == 0:
+            return text
+    else:
+        return text
 
 def mainMenu():
     sg.theme('Reddit')   # Add a touch of color
@@ -60,8 +75,7 @@ def inputWindow():
             break
         elif event == 'Save': # saves the value in the text input into a file
             print('You entered Title: ' + values[0] + ' and contents: ' + values['TextInput'])
-            writeToFile("myfile.txt", values[0] + "!$")
-            writeToFile("myfile.txt", values['TextInput'] + "!$END!$")
+            writeToFile("myfile.txt", values[0], values['TextInput'])
         elif event == 'Fade': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
