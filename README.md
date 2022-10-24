@@ -1,7 +1,24 @@
+
 # Power-Presenting-Notes
+
 Capstone Project
 
-To install pysimplegui access your git/cmd terminal and type in the following:
+## Library Installation
+
+To install pysimplegui access your git/cmd terminal and type in the following:  
+```
 pip install pysimplegui
-or
+```
+
+or  
+
+```
 pip3 install pysimplegui
+```
+
+## Execution Instruction
+
+To run the current application and access its graphical interface access your git/cmd terminal and type in the following:
+```
+py GuiTest.py
+```
