@@ -1,4 +1,5 @@
 from distutils.log import debug
+from tkinter import font
 from tokenize import String
 from turtle import color, position
 import PySimpleGUI as sg
@@ -63,13 +64,10 @@ def inputWindow(file):
     noteCounter = 0
     
     sg.theme('Reddit')   # Add a touch of color
-    
-    # list of  items in the dropdown menu
-    selection = ('Opacity', 'Timer', 'Theme', 'Font', 'Font Size', 'Speech to Text') 
 
     # All the stuff inside your window.
     layout = [  
-        [sg.Text('Title:'), sg.InputText(size=(30), key='title'), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), sg.Combo(selection, enable_events=True, key='-COMBO-', default_value= 'Options')],
+        [sg.Text('Title:'), sg.InputText(size=(30), key='title'), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), sg.Button('Options')],
         [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
         [sg.Button('Opacity'), sg.Button('Debug Button')],
         [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
@@ -88,12 +86,36 @@ def inputWindow(file):
     for x in range(len(notes[0])-1):
         bodyStr += notes[0][x+1]
     window['TextInput'].update(bodyStr)
+
+    #selections in options menu
+    font_selections = ('Font', 'font', 'font', 'font')
+    font_size = ('1', '2', '3')
+    theme_selections = ('dark', 'light', 'reddit')
+    timer_selections = ('1', '2', '3')
+    opacity_selections = ('1', '2', '3')
+    speechToText_selections = ('Enable', 'Disable')
+
+
+    # list of  items in the dropdown menu
+    options_menu_layout = [
+        [sg.Text('OPTIONS:')],
+        [sg.Text("Select Font"),sg.Push(),(sg.Combo(font_selections, enable_events=True, key='-COMBO-', default_value= 'Font'))],
+        [sg.Text('Font Size'), sg.Push(),(sg.Combo(font_size, enable_events=True, key='-COMBO-', default_value= '1'))],
+        [sg.Text('Timer'), sg.Push(),(sg.Combo(timer_selections, enable_events=True, key='-COMBO-', default_value= '1'))], 
+        [sg.Text('Theme'), sg.Push(),(sg.Combo(theme_selections, enable_events=True, key='-COMBO-', default_value= 'reddit'))], 
+        [sg.Text('Opacity'), sg.Push(),(sg.Combo(opacity_selections, enable_events=True, key='-COMBO-', default_value= '1'))], 
+        [sg.Text('Speech to Text'), sg.Push(),(sg.Combo(speechToText_selections, enable_events=True, key='-COMBO-', default_value= 'Disabled'))],
+        [sg.Text('Alignment')],
+        [sg.Button('Return'), sg.Push(),sg.Button('Save')]
+    ]
     
     # Event Loop to process "events" and get the "values" of the inputs
     while True:
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
             break
+        elif event == 'Options':
+            window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = False) 
         elif event == 'Save': # saves the value in the text input into a file
             print('You entered Title: ' + values['title'] + ' and contents: ' + values['TextInput'])
             writeToFile(file, values['title'], values['TextInput'])
@@ -135,6 +157,30 @@ def inputWindow(file):
                 window['TextInput'].update(bodyStr)
 
     window.close()
+
+    while True:
+        event, values = window.read()
+        
+        if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
+            break
+
+        elif event == 'Return':
+            window.close()
+        #elif event == 'Save':
+            #
+        #elif event == 'Font':
+            #
+        #elif event == 'Font size':
+            #
+        #elif event == 'Theme':
+            #
+        #elif event == 'Opacity':
+            #
+        #elif event == 'Timer':
+            #
+        #elif event == 'Speech to Text':
+            #
+
 
 def outputWindow(file):
     counter = 0
