@@ -1,8 +1,40 @@
-from distutils.log import debug
-from tkinter import font
-from tokenize import String
-from turtle import color, position
+from venv import create
 import PySimpleGUI as sg
+from json import (load as jsonload, dump as jsondump)
+from os import path
+
+
+
+SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
+DEFAULT_SETTINGS = {'max_users': 10, 'user_data_folder': None , 'theme': sg.theme(), 'zipcode' : '94102'}
+# "Map" from the settings dictionary keys to the window's element keys
+SETTINGS_KEYS_TO_ELEMENT_KEYS = {'max_users': '-MAX USERS-', 'user_data_folder': '-USER FOLDER-' , 'theme': '-THEME-', 'zipcode' : '-ZIPCODE-'}
+
+
+
+########################################## Load/Save/Write/Read Functions ##########################################
+def load_settings(settings_file, default_settings):
+    try:
+        with open(settings_file, 'r') as f:
+            settings = jsonload(f)
+    except Exception as e:
+        sg.popup_quick_message(f'exception {e}', 'No settings file found... will create one for you', keep_on_top=True, background_color='red', text_color='white')
+        settings = default_settings
+        save_settings(settings_file, settings, None)
+    return settings
+
+def save_settings(settings_file, settings, values):
+    if values:      # if there are stuff specified by another window, fill in those values
+        for key in SETTINGS_KEYS_TO_ELEMENT_KEYS:  # update window with the values read from settings file
+            try:
+                settings[key] = values[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]]
+            except Exception as e:
+                print(f'Problem updating settings from window values. Key = {key}')
+
+    with open(settings_file, 'w') as f:
+        jsondump(settings, f)
+
+    sg.popup('Settings saved')
 
 def writeToFile(fileName, title, body):
     #f = open(fileName, "w")
@@ -36,67 +68,71 @@ def recursiveText(text, begin):
         textList.append(text[begin])
         return textList
 
-def mainMenu():
-    #sg.theme(settings['theme'])   # Add a touch of color
+########################################## Make a settings window ##########################################
+def create_settings_window(settings):
+    sg.theme(settings['theme'])
 
-    # All the stuff inside your window.
-    layout = [  [sg.Text('Welcome to Power Presenting Notes!')],
-            [sg.Button('Start')],
-            [sg.Sizegrip()]]
-            
+    def TextLabel(text): return sg.Text(text+':', justification='r', size=(15,1))
 
-    # Create the Window
-    window = sg.Window('Power Presenting Notes', layout, element_justification='c', icon="PPN.ico", keep_on_top = False, finalize = True)
-    # Event Loop to process "events" and get the "values" of the inputs
-    while True:
-        event, values = window.read()
-        if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
-            break
-        elif event == 'Start':
-            window.close()
-            inputWindow("myfile.txt")
-        
-    window.close()
+    layout = [  [sg.Text('Settings', font='Any 15')],
+                [TextLabel('Font'), sg.Input(key='-MAX USERS-')],
+                [TextLabel('Font Size'),sg.Input(key='-USER FOLDER-'), sg.FolderBrowse(target='-USER FOLDER-')],
+                [TextLabel('Timer'),sg.Input(key='-ZIPCODE-')],
+                [TextLabel('Theme'),sg.Combo(sg.theme_list(), size=(20, 20), key='-THEME-')],
+                [sg.Button('Save'), sg.Button('Exit')]  ]
 
+    window = sg.Window('Settings', layout, keep_on_top=True, finalize=True)
 
-def create_settings_window():
-    #sg.theme(settings['theme'])
-
-    #selections in options menu
-    font_selections = ('Font', 'font', 'font', 'font')
-    font_size = ('1', '2', '3')
-    theme_selections = ('Dark', 'Light', 'Reddit')
-    timer_selections = ('1', '2', '3')
-    opacity_selections = ('1', '2', '3')
-    speechToText_selections = ('Enable', 'Disable')
-
-
-    # list of  items in the dropdown menu
-    options_menu_layout = [
-        [sg.Text('OPTIONS:')],
-        [sg.Text("Select Font"),sg.Push(),(sg.Combo(font_selections, enable_events=True, key='-FONTS-', default_value= 'Font'))],
-        [sg.Text('Font Size'), sg.Push(),(sg.Combo(font_size, enable_events=True, key='-FONT SIZE-', default_value= '1'))],
-        [sg.Text('Timer'), sg.Push(),(sg.Combo(timer_selections, enable_events=True, key='-TIMER-', default_value= '1'))], 
-        [sg.Text('Theme'), sg.Push(),(sg.Combo(theme_selections, enable_events=True, key='-THEME-', default_value= 'reddit'))], 
-        [sg.Text('Opacity'), sg.Push(),(sg.Combo(opacity_selections, enable_events=True, key='-OPACITY-', default_value= '1'))], 
-        [sg.Text('Speech to Text'), sg.Push(),(sg.Combo(speechToText_selections, enable_events=True, key='-SPEECH TO TEXT-', default_value= 'Disabled'))],
-        [sg.Text('Alignment')],
-        [sg.Button('Return'), sg.Push(),sg.Button('Save')]
-    ]
-
-    window = sg.Window('Settings', options_menu_layout, keep_on_top=True, finalize=True)
+    for key in SETTINGS_KEYS_TO_ELEMENT_KEYS:   # update window with the values read from settings file
+        try:
+            window[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]].update(value=settings[key])
+        except Exception as e:
+            print(f'Problem updating PySimpleGUI window from settings. Key = {key}')
 
     return window
 
-def inputWindow(file):
+########################################## Main Program Window & Event Loop ##########################################
+def create_main_window(settings):
+    sg.theme(settings['theme'])
+
+    layout = [[sg.Menu([['&File', []], ['&Edit', ['&Settings'], ],['&Help', '&About...'],])],
+            [sg.Text('Welcome to Power Presenting Notes!')],
+            [sg.Button('Start')],
+            [sg.Sizegrip()]]
+    
+    window = sg.Window('Power Presenting Notes', layout, element_justification='c', icon="PPN.ico", keep_on_top = False, finalize = True)
+
+    # Event Loop to process "events" and get the "values" of the inputs
+    #while True:
+    #    event, values = window.read()
+    #    if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
+    #        break
+    #    elif event == 'Start':
+    #        window.close()
+    #        inputWindow("myfile.txt")
+    #while True:
+    #    if window is create_main_window(settings) & event == "Start":
+    #        window = inputWindow("myfile")
+
+    #    event, values = window.read()
+
+        #if event in ('Start'):
+         #   window.close()
+          #  window = inputWindow()
+           # event, values = inputWindow("mytextfile")
+
+
+    return window
+
+def inputWindow(file):    
+    #sg.theme(settings['theme']) # Add a touch of color
+
     counter = 0
     transparencyOptions = [0.75, 0.5, 1]
     noteCounter = 0
-    
-    sg.theme('Reddit')   # Add a touch of color
 
     # All the stuff inside your window.
-    layout = [  
+    layout = [[sg.Menu([['&File', []], ['&Edit', ['&Settings'], ],['&Help', '&About...'],])],  
         [sg.Text('Title:'), sg.InputText(size=(30), key='title'), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), sg.Button('Options')],
         [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
         [sg.Button('Opacity'), sg.Button('Debug Button')],
@@ -166,9 +202,10 @@ def inputWindow(file):
                 for x in range(len(notes[noteCounter])-1):
                     bodyStr += notes[noteCounter][x+1]
                 window['TextInput'].update(bodyStr)
+    
+    return sg.Window('Power Presenting Notes', layout, element_justification='c', icon="PPN.ico", keep_on_top = False, finalize = True)
 
     window.close()
-
 
 def outputWindow(file):
     counter = 0
@@ -225,5 +262,26 @@ def outputWindow(file):
                 window['body'].update(bodyStr)
 
     window.close()
-    
-mainMenu()
+
+def main():
+    window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
+
+    while True:             # Event Loop
+        if window is None:
+            window = create_main_window(settings)
+
+        event, values = window.read()
+
+        if event in (sg.WIN_CLOSED, 'Exit'):
+            break
+        if event in ('Change Settings', 'Settings'):
+            event, values = create_settings_window(settings).read(close=True)
+            if event == 'Save':
+                window.close()
+                window = None
+                save_settings(SETTINGS_FILE, settings, values)
+    window.close()
+
+
+
+main()
