@@ -36,6 +36,18 @@ def recursiveText(text, begin):
         textList.append(text[begin])
         return textList
 
+def clearFile(fileName):
+    f = open(fileName, "w")
+    f.close()
+
+def overWriteFile(fileName, data):
+    clearFile(fileName)
+    f = open(fileName, "a")
+    for line in data:
+        f.write("$S$\n" + line[0])
+        f.write(line[1] + "\n")
+    f.close()
+
 def mainMenu():
     #sg.theme(settings['theme'])   # Add a touch of color
 
@@ -134,7 +146,11 @@ def inputWindow(file):
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
         elif event == 'Debug Button': # Reads the value from the first line of the file and displays it in the Debug text NOT FUNCTIONAL
-            window['Debug'].update(readFromFile(file))
+            text = readFromFile(file)
+            extra = ["Extra Note\n", "This tests the functionality of the over-write\n"]
+            text.append(extra)
+            overWriteFile(file, text)
+            window['Debug'].update("Done!")
         elif event == "Submit":
             print(values["-IN-"])
         elif event == "Opacity":
