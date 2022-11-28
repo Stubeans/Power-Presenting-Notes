@@ -1,11 +1,9 @@
-from distutils.log import debug
-from tkinter import font
 from tkinter import *
-from tokenize import String
-from turtle import color, position
 import PySimpleGUI as sg
 
 ## Method to write to file 
+# Takes in a fileName (Text file needs to be in the same file header as this .py file)
+# A title (type String), and a body (stype String) and adds them to the end of the txt file including necessary formatting
 def writeToFile(fileName, title, body):
     #f = open(fileName, "w")
     f = open(fileName, "a")
@@ -14,6 +12,8 @@ def writeToFile(fileName, title, body):
     f.close()
 
 ## Method to read to file 
+# Takes in a fileName and returns a formatting List in the following format:
+# List[Note][X] where X = 0 for Title | 1-n for Body strings
 def readFromFile(fileName):
     f = open(fileName, "r")
     text = f.readlines()
@@ -24,6 +24,9 @@ def readFromFile(fileName):
     f.close()
     return returnText
 
+# A helper function for readFromFile. Once a $S$ is found, which is a custom code used to distinguish breaks between notes, this function is triggered
+# The function starts at the begin variable, which simply designates which line to start on in the text, the text being the .txt file's lines
+# It appends each following line to the textList which is essentially the body of the note, until another $S$ is found, or the end of the file is reached.
 def recursiveText(text, begin):
     textList = []
     if begin != len(text)-1:
@@ -39,20 +42,25 @@ def recursiveText(text, begin):
         textList.append(text[begin])
         return textList
 
+# Self-Explanatory
 def clearFile(fileName):
     f = open(fileName, "w")
     f.close()
 
+# Takes a fileName and completely rewrites it using new data (data being a formatted list in the following format: )
+# data[Note][X] where X = 0 for Title | 1-n for Body strings
 def overWriteFile(fileName, data):
     clearFile(fileName)
     f = open(fileName, "a")
-    for line in data:
-        f.write("$S$\n" + line[0])
-        for x in range (len(line)-1):
-            f.write(line[x+1])
+    for note in data:
+        f.write("$S$\n" + note[0])
+        for x in range (len(note)-1):
+            f.write(note[x+1])
     f.close()
 
+# This function handles the main menu portion of our app
 def mainMenu():
+    # Designates the theme of the window
     sg.theme('Reddit')
 
     # All the stuff inside your window.
@@ -76,7 +84,7 @@ def mainMenu():
         
     window.close()
 
-
+# This function handles the setting of user preferences
 def create_settings_window():
     #sg.theme(settings['theme'])
 
@@ -106,8 +114,11 @@ def create_settings_window():
 
     return window
 
+# This function handles the input window of our app
 def inputWindow(file):
    
+   # counter keeps track of the current fade element, transparencyOptions handles fade values stored in a list
+   # noteCounter keeps track of which note the user is currently viewing
     counter = 0
     transparencyOptions = [0.75, 0.5, 1]
     noteCounter = 0
@@ -122,9 +133,9 @@ def inputWindow(file):
     layout = [  
         [sg.Text('Title:'), sg.InputText(size=(30), key='title',), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), 
         sg.Button('Options')],
-        [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True, background_color="white"), sg.Button('->')],
+        [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
         [sg.Button('Opacity'), sg.Push(), sg.Button('Return')],
-        [sg.Button('Save'), sg.Push(), sg.Button('Display')],
+        [sg.Button('Save'), sg.Push(), sg.Button('Present')],
         [sg.Button('Close')],
         #[sg.Button('Fade\nAway', button_color=colors, image_data='C:\Users\Sherap\PPN\Fade.png',border_width=0)],
 
@@ -138,6 +149,7 @@ def inputWindow(file):
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", element_justification='c', keep_on_top = False, finalize = True)
 
+    # This fills the Title and Body fields with text from the .txt file
     notes = readFromFile(file)
     window['title'].update(notes[0][0])
     bodyStr = ""
@@ -155,7 +167,7 @@ def inputWindow(file):
         elif event == 'Options':
             create_settings_window()
             #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
-        elif event == 'Save': # saves the value in the text input into a file
+        elif event == 'Save': # saves the value in the text inputs into the current file
             print("The note before saving looks like: ")
             print(notes)
             print('You entered Title: ' + values['title'] + ' and contents: ' + values['TextInput'])
@@ -168,7 +180,7 @@ def inputWindow(file):
             print(notes)
             overWriteFile(file, notes)
             print("done!")
-        elif event == 'Add Note':
+        elif event == 'Add Note': # Adds a note to the .txt file, while moving the user to the new note inside the app
             writeToFile(file, "default title", "default body")
             notes = readFromFile(file)
             noteCounter = len(notes) - 1
@@ -178,26 +190,16 @@ def inputWindow(file):
             for x in range(len(notes[noteCounter])-1):
                 bodyStr += notes[noteCounter][x+1]
             window['TextInput'].update(bodyStr)
-        elif event == 'Fade': # Runs through fade options on a button loop
-            window.set_alpha(transparencyOptions[counter%3])
-            counter += 1
-        elif event == 'Return': # Reads the value from the first line of the file and displays it in the Debug text NOT FUNCTIONAL
+        elif event == 'Return': # Returns you to the previous screen
             window.close()
             mainMenu()
-        elif event == "Submit":
-            print(values["-IN-"])
-        elif event == "Opacity":
+        elif event == "Opacity": # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
-            #choice, _ = sg.Window('Settings', [[sg.T('Would you like to return?')], [sg.Yes(s=10), sg.No(s=10)]], disable_close=True).read(close=True)
-            #if(choice == "Yes"):
-                #print("answer was yes")
-            #elif(choice == "No"):
-                #print("answer was no")
-        elif event == 'Display':
+        elif event == 'Present': # Presents the notes by opening the output window
             window.close()
             outputWindow(file)
-        elif event == '<-':
+        elif event == '<-': # reduces the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
             if(noteCounter > 0):
                 noteCounter = noteCounter - 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
@@ -206,7 +208,7 @@ def inputWindow(file):
                 for x in range(len(notes[noteCounter])-1):
                     bodyStr += notes[noteCounter][x+1]
                 window['TextInput'].update(bodyStr)
-        elif event == '->':
+        elif event == '->': # increases the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
             if(noteCounter < len(notes)-1):
                 noteCounter = noteCounter + 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
@@ -218,8 +220,11 @@ def inputWindow(file):
 
     window.close()
 
-
+# This function handles the output window of our app
 def outputWindow(file):
+
+    # counter keeps track of the current fade element, transparencyOptions handles fade values stored in a list
+    # noteCounter keeps track of which note the user is currently viewing
     counter = 0
     transparencyOptions = [0.75, 0.5, 1]
     noteCounter = 0
@@ -235,6 +240,7 @@ def outputWindow(file):
     # Create the Window
     window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = True, finalize = True)
 
+    # This fills the Title and Body fields with text from the .txt file
     notes = readFromFile(file)
     window['title'].update('NOTES: ' + notes[0][0])
     bodyStr = ""
@@ -254,7 +260,7 @@ def outputWindow(file):
         elif event == 'Fade': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
-        elif event == '<-':
+        elif event == '<-': # reduces the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
             if(noteCounter > 0):
                 noteCounter = noteCounter - 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
@@ -263,7 +269,7 @@ def outputWindow(file):
                 for x in range(len(notes[noteCounter])-1):
                     bodyStr += notes[noteCounter][x+1]
                 window['body'].update(bodyStr)
-        elif event == '->':
+        elif event == '->': # increases the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
             if(noteCounter < len(notes)-1):
                 noteCounter = noteCounter + 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
