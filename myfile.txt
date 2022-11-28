@@ -3,10 +3,12 @@ First Note
 First Note Body
 Final test
 Works!
+etc.
 $S$
 Second note!
 this is the second note!
 testing testing one two three!
+Update
 $S$
 Third Note
 this is the third note!

@@ -134,8 +134,8 @@ def inputWindow(file):
         [sg.Text('Title:'), sg.InputText(size=(30), key='title',), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), 
         sg.Button('Options')],
         [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
-        [sg.Button('Opacity'), sg.Push(), sg.Button('Return')],
-        [sg.Button('Save'), sg.Push(), sg.Button('Present')],
+        [sg.Button('Opacity'), sg.Push(), sg.Button(' Return ')],
+        [sg.Button('  Save  '), sg.Push(), sg.Button('Present')],
         [sg.Button('Close')],
         #[sg.Button('Fade\nAway', button_color=colors, image_data='C:\Users\Sherap\PPN\Fade.png',border_width=0)],
 
@@ -167,7 +167,7 @@ def inputWindow(file):
         elif event == 'Options':
             create_settings_window()
             #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
-        elif event == 'Save': # saves the value in the text inputs into the current file
+        elif event == '  Save  ': # saves the value in the text inputs into the current file
             print("The note before saving looks like: ")
             print(notes)
             print('You entered Title: ' + values['title'] + ' and contents: ' + values['TextInput'])
@@ -190,7 +190,7 @@ def inputWindow(file):
             for x in range(len(notes[noteCounter])-1):
                 bodyStr += notes[noteCounter][x+1]
             window['TextInput'].update(bodyStr)
-        elif event == 'Return': # Returns you to the previous screen
+        elif event == ' Return ': # Returns you to the previous screen
             window.close()
             mainMenu()
         elif event == "Opacity": # Runs through fade options on a button loop
@@ -234,7 +234,7 @@ def outputWindow(file):
     # All the stuff inside your window.
     layout = [  [sg.Text('NOTES:', key="title"), sg.Push(), sg.Text('Note 1', key='NoteCount')],
                 [sg.Button('<-'), sg.Text(size=(50, 20), key="body", background_color="light gray"), sg.Button('->')],
-                [sg.Button('Return'), sg.Button('Fade'), sg.Push(), sg.Button('Close')],
+                [sg.Button('Return'), sg.Button('Opacity'), sg.Push(), sg.Button('Close')],
                 [sg.Sizegrip()]]
 
     # Create the Window
@@ -257,7 +257,7 @@ def outputWindow(file):
         elif event == 'Return': # Returns to the inputWindow
             window.close()
             inputWindow(file)
-        elif event == 'Fade': # Runs through fade options on a button loop
+        elif event == 'Opacity': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
         elif event == '<-': # reduces the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
