@@ -5,6 +5,7 @@ from tokenize import String
 from turtle import color, position
 import PySimpleGUI as sg
 
+## Method to write to file 
 def writeToFile(fileName, title, body):
     #f = open(fileName, "w")
     f = open(fileName, "a")
@@ -12,6 +13,7 @@ def writeToFile(fileName, title, body):
     f.write(body + "\n")
     f.close()
 
+## Method to read to file 
 def readFromFile(fileName):
     f = open(fileName, "r")
     text = f.readlines()
@@ -50,13 +52,14 @@ def overWriteFile(fileName, data):
             f.write(line[x+1])
     f.close()
 
-
 def mainMenu():
-    #sg.theme(settings['theme'])   # Add a touch of color
+    sg.theme('Reddit')
 
     # All the stuff inside your window.
-    layout = [  [sg.Text('Welcome to Power Presenting Notes!')],
+    layout = [  [sg.Text('Welcome to Power Presenting Notes!', text_color="Black")],
             [sg.Button('Start')],
+            [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
+    
             [sg.Sizegrip()]]
             
 
@@ -104,26 +107,36 @@ def create_settings_window():
     return window
 
 def inputWindow(file):
+   
     counter = 0
     transparencyOptions = [0.75, 0.5, 1]
     noteCounter = 0
     
     sg.theme('Reddit')   # Add a touch of color
 
+    #attempt to add image as button 
+    #sg.set_options(font=font)
+    #colors = (sg.theme_background_color(), sg.theme_background_color())
+    
     # All the stuff inside your window.
     layout = [  
-        [sg.Text('Title:'), sg.InputText(size=(30), key='title'), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), sg.Button('Options')],
-        [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
-        [sg.Button('Opacity'), sg.Button('Debug Button')],
-        [sg.Button('Save'), sg.Push(), sg.Button('Read Note'), sg.Button('Close')],
-        [sg.Text('Debug', key='Debug')],
-        [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
+        [sg.Text('Title:'), sg.InputText(size=(30), key='title',), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), 
+        sg.Button('Options')],
+        [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True, background_color="white"), sg.Button('->')],
+        [sg.Button('Opacity'), sg.Push(), sg.Button('Return')],
+        [sg.Button('Save'), sg.Push(), sg.Button('Display')],
+        [sg.Button('Close')],
+        #[sg.Button('Fade\nAway', button_color=colors, image_data='C:\Users\Sherap\PPN\Fade.png',border_width=0)],
+
+
+
+
         [sg.Sizegrip()]
         ]
             
 
     # Create the Window
-    window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
+    window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", element_justification='c', keep_on_top = False, finalize = True)
 
     notes = readFromFile(file)
     window['title'].update(notes[0][0])
@@ -168,11 +181,9 @@ def inputWindow(file):
         elif event == 'Fade': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
-        elif event == 'Debug Button': # 
-            notes = readFromFile(file)
-            print(notes)
-            print(parseBody(notes[0]))
-            window['Debug'].update("Done!")
+        elif event == 'Return': # Reads the value from the first line of the file and displays it in the Debug text NOT FUNCTIONAL
+            window.close()
+            mainMenu()
         elif event == "Submit":
             print(values["-IN-"])
         elif event == "Opacity":
@@ -183,7 +194,7 @@ def inputWindow(file):
                 #print("answer was yes")
             #elif(choice == "No"):
                 #print("answer was no")
-        elif event == 'Read Note':
+        elif event == 'Display':
             window.close()
             outputWindow(file)
         elif event == '<-':
