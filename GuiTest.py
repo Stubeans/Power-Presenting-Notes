@@ -48,16 +48,17 @@ def overWriteFile(fileName, data):
     f = open(fileName, "a")
     for line in data:
         f.write("$S$\n" + line[0])
-        f.write(line[1] + "\n")
+        for x in range (len(line)-1):
+            f.write(line[x+1])
     f.close()
 
 def mainMenu():
-    sg.theme('DarkTeal6')
+    sg.theme('Reddit')
 
     # All the stuff inside your window.
     layout = [  [sg.Text('Welcome to Power Presenting Notes!', text_color="Black")],
-            [sg.Button('Start', button_color="#A52626"),],
-            [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit", button_color="#A52626")],
+            [sg.Button('Start')],
+            [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
     
             [sg.Sizegrip()]]
             
@@ -111,7 +112,7 @@ def inputWindow(file):
     transparencyOptions = [0.75, 0.5, 1]
     noteCounter = 0
     
-    sg.theme('DarkTeal6')   # Add a touch of color
+    sg.theme('Reddit')   # Add a touch of color
 
     #attempt to add image as button 
     #sg.set_options(font=font)
@@ -119,12 +120,12 @@ def inputWindow(file):
     
     # All the stuff inside your window.
     layout = [  
-        [sg.Text('Title:'), sg.InputText(size=(30), key='title',), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note', button_color="#A52626"), 
-        sg.Button('Options',button_color="#A52626")],
-        [sg.Button('<-',button_color="#A52626"), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True, background_color="white"), sg.Button('->', button_color="#A52626")],
-        [sg.Button('Opacity',button_color="#A52626"), sg.Push(), sg.Button('Return', button_color="#A52626")],
-        [sg.Button('Save', button_color="#A52626"), sg.Push(), sg.Button('Display', button_color="#A52626")],
-        [sg.Button('Close', button_color="Yellow")],
+        [sg.Text('Title:'), sg.InputText(size=(30), key='title',), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), 
+        sg.Button('Options')],
+        [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True, background_color="white"), sg.Button('->')],
+        [sg.Button('Opacity'), sg.Push(), sg.Button('Return')],
+        [sg.Button('Save'), sg.Push(), sg.Button('Display')],
+        [sg.Button('Close')],
         #[sg.Button('Fade\nAway', button_color=colors, image_data='C:\Users\Sherap\PPN\Fade.png',border_width=0)],
 
 
@@ -155,8 +156,28 @@ def inputWindow(file):
             create_settings_window()
             #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
         elif event == 'Save': # saves the value in the text input into a file
+            print("The note before saving looks like: ")
+            print(notes)
             print('You entered Title: ' + values['title'] + ' and contents: ' + values['TextInput'])
-            writeToFile(file, values['title'], values['TextInput'])
+            notes = readFromFile(file)
+            title = values['title']
+            title = title.replace('\n', '')
+            newLine = [title + "\n", values['TextInput'] + "\n"]
+            notes[noteCounter] = newLine
+            print("The note after saving looks like: ")
+            print(notes)
+            overWriteFile(file, notes)
+            print("done!")
+        elif event == 'Add Note':
+            writeToFile(file, "default title", "default body")
+            notes = readFromFile(file)
+            noteCounter = len(notes) - 1
+            window['NoteCount'].update("Note " + str(noteCounter + 1))
+            window['title'].update(notes[noteCounter][0])
+            bodyStr = ""
+            for x in range(len(notes[noteCounter])-1):
+                bodyStr += notes[noteCounter][x+1]
+            window['TextInput'].update(bodyStr)
         elif event == 'Fade': # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1

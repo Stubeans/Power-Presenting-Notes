@@ -1,5 +1,6 @@
 from distutils.log import debug
 from tkinter import font
+from tkinter import *
 from tokenize import String
 from turtle import color, position
 import PySimpleGUI as sg
