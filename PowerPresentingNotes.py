@@ -151,7 +151,9 @@ def inputWindow(file):
 
     # This fills the Title and Body fields with text from the .txt file
     notes = readFromFile(file)
-    window['title'].update(notes[0][0])
+    title = notes[0][0]
+    title = title.replace('\n', '')
+    window['title'].update(title)
     bodyStr = ""
     for x in range(len(notes[0])-1):
         bodyStr += notes[0][x+1]
@@ -203,7 +205,9 @@ def inputWindow(file):
             if(noteCounter > 0):
                 noteCounter = noteCounter - 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
-                window['title'].update(notes[noteCounter][0])
+                title = notes[noteCounter][0]
+                title = title.replace('\n', '')
+                window['title'].update(title)
                 bodyStr = ""
                 for x in range(len(notes[noteCounter])-1):
                     bodyStr += notes[noteCounter][x+1]
@@ -212,7 +216,9 @@ def inputWindow(file):
             if(noteCounter < len(notes)-1):
                 noteCounter = noteCounter + 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
-                window['title'].update(notes[noteCounter][0])
+                title = notes[noteCounter][0]
+                title = title.replace('\n', '')
+                window['title'].update(title)
                 bodyStr = ""
                 for x in range(len(notes[noteCounter])-1):
                     bodyStr += notes[noteCounter][x+1]
