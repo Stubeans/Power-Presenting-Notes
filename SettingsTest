@@ -75,8 +75,9 @@ def create_settings_window(settings):
     def TextLabel(text): return sg.Text(text+':', justification='r', size=(15,1))
 
     layout = [  [sg.Text('Settings', font='Any 15')],
-                [TextLabel('Font'), sg.Input(key='-MAX USERS-')],
-                [TextLabel('Font Size'),sg.Input(key='-USER FOLDER-'), sg.FolderBrowse(target='-USER FOLDER-')],
+                [TextLabel('Font'), sg.Combo(sg.Text.fonts_installed_list(), size=(20,20), key = '-MAX USERS-')],
+                [TextLabel('Font Size'), sg.Spin([i for i in range(1,15)], initial_value=8)],
+                [TextLabel('Opacity'), sg.Slider(range=(0,10), default_value=0, size=(15,15), orientation='horizontal', key='-USER FOLDER-')],
                 [TextLabel('Timer'),sg.Input(key='-ZIPCODE-')],
                 [TextLabel('Theme'),sg.Combo(sg.theme_list(), size=(20, 20), key='-THEME-')],
                 [sg.Button('Save'), sg.Button('Exit')]  ]
@@ -124,7 +125,7 @@ def create_main_window(settings):
 
     return window
 
-def inputWindow(file):    
+def inputWindow(file, settings):    
     #sg.theme(settings['theme']) # Add a touch of color
 
     counter = 0
@@ -144,7 +145,9 @@ def inputWindow(file):
             
 
     # Create the Window
-    window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
+    #window = sg.Window('Power Presenting Notes', layout, icon="PPN.ico", keep_on_top = False, finalize = True)
+    window = sg.Window('Power Presenting Notes', layout, element_justification='c', icon="PPN.ico", keep_on_top = False, finalize = True)
+
 
     notes = readFromFile(file)
     window['title'].update(notes[0][0])
@@ -157,30 +160,28 @@ def inputWindow(file):
     
     # Event Loop to process "events" and get the "values" of the inputs
     while True:
+        if window is None:
+            main()
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
             break
-        elif event == 'Options':
-            create_settings_window()
-            #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
+        if event in ('Options', 'Settings'):
+            event, values = create_settings_window(settings).read(close=True)
+            if event == 'Save':
+                window.close()
+                window = None
+                save_settings(SETTINGS_FILE, settings, values)
         elif event == 'Save': # saves the value in the text input into a file
             print('You entered Title: ' + values['title'] + ' and contents: ' + values['TextInput'])
             writeToFile(file, values['title'], values['TextInput'])
-        elif event == 'Fade': # Runs through fade options on a button loop
-            window.set_alpha(transparencyOptions[counter%3])
-            counter += 1
-        elif event == 'Debug Button': # Reads the value from the first line of the file and displays it in the Debug text NOT FUNCTIONAL
-            window['Debug'].update(readFromFile(file))
+        
+
         elif event == "Submit":
             print(values["-IN-"])
         elif event == "Opacity":
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
-            #choice, _ = sg.Window('Settings', [[sg.T('Would you like to return?')], [sg.Yes(s=10), sg.No(s=10)]], disable_close=True).read(close=True)
-            #if(choice == "Yes"):
-                #print("answer was yes")
-            #elif(choice == "No"):
-                #print("answer was no")
+
         elif event == 'Read Note':
             window.close()
             outputWindow(file)
@@ -202,10 +203,9 @@ def inputWindow(file):
                 for x in range(len(notes[noteCounter])-1):
                     bodyStr += notes[noteCounter][x+1]
                 window['TextInput'].update(bodyStr)
-    
-    return sg.Window('Power Presenting Notes', layout, element_justification='c', icon="PPN.ico", keep_on_top = False, finalize = True)
-
+        
     window.close()
+    return window
 
 def outputWindow(file):
     counter = 0
@@ -280,8 +280,10 @@ def main():
                 window.close()
                 window = None
                 save_settings(SETTINGS_FILE, settings, values)
+        if event == 'Start':
+            window.close()
+            inputWindow("myfile.txt", settings)
+
     window.close()
-
-
 
 main()
