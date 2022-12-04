@@ -131,10 +131,10 @@ def inputWindow(file):
     
     # All the stuff inside your window.
     layout = [  
-        [sg.Text('Title:'), sg.InputText(size=(30), key='title',), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), 
+        [sg.Text('Title:'), sg.InputText(size=(30), key='title'), sg.Text('Note 1', key='NoteCount'), sg.Button('Add Note'), 
         sg.Button('Options')],
         [sg.Button('<-'), sg.Multiline(key="TextInput", size=(50,20), expand_x=True, expand_y=True), sg.Button('->')],
-        [sg.Button('Opacity'), sg.Push(), sg.Button(' Return ')],
+        [sg.Button('Opacity'), sg.Button('Swap'), sg.Text('note #'), sg.InputText(size=(2), key='note1'), sg.Text('with note #'), sg.InputText(size=(2), key='note2'), sg.Push(), sg.Button(' Return ')],
         [sg.Button('  Save  '), sg.Push(), sg.Button('Present')],
         [sg.Button('Close')],
         #[sg.Button('Fade\nAway', button_color=colors, image_data='C:\Users\Sherap\PPN\Fade.png',border_width=0)],
@@ -223,6 +223,17 @@ def inputWindow(file):
                 for x in range(len(notes[noteCounter])-1):
                     bodyStr += notes[noteCounter][x+1]
                 window['TextInput'].update(bodyStr)
+        elif event == 'Swap': # Swaps the two notes indicated in inputText's 'note1' and 'note2' and overwrites the text file
+            notes = readFromFile(file)
+            note1 = int(values['note1']) - 1
+            note2 = int(values['note2']) - 1
+            if(note1 > len(notes) - 1 or note2 > len(notes) - 1 or note1 < 1 or note2 < 1):
+                print("Not valid note numbers")
+            else:
+                temp = notes[note1]
+                notes[note1] = notes[note2]
+                notes[note2] = temp
+                overWriteFile(file, notes)
 
     window.close()
 
