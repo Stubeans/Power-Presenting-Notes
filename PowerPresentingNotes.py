@@ -81,6 +81,9 @@ def mainMenu():
         elif event == 'Start':
             window.close()
             inputWindow("myfile.txt")
+        elif event == 'Submit':
+            window.close()
+            inputWindow(values['-IN-'])
         
     window.close()
 
