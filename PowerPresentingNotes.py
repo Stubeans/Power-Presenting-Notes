@@ -362,6 +362,10 @@ def main():
         if event == 'Start':
             window.close()
             inputWindow("myfile.txt", settings)
+
+        if event == 'Submit':
+            window.close()
+            inputWindow(values['-IN-'], settings)
         
 
 
