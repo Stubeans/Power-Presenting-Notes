@@ -98,6 +98,7 @@ def overWriteFile(fileName, data):
 
 # This function handles the main menu portion of our app
 def mainMenu(settings):
+    sg.theme(settings['theme'])
 
     # All the stuff inside your window.
     layout = [  
@@ -143,7 +144,7 @@ def create_settings_window(settings):
                 [sg.Button('Save'), sg.Button('Exit')]
             ]
 
-    window = sg.Window('Options', layout, keep_on_top=True, finalize=True)
+    window = sg.Window('Options', layout, keep_on_top=True, finalize=True, icon="PPN.ico")
 
     return window
 
