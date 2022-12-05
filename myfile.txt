@@ -23,5 +23,4 @@ $S$
 Title
 - Our project was meant to revolutionize the field of presentations. 
 - By making it relatively easy to deliver a structured presentation while having access to your notes.
-- Delivering presentation can be a very daunting task, from the nervousness of presenting to the hope you don’t make any mistakes
-- Our App is meant to allow students to take a good look at their notes while giving a presentations  to an audience from the stress and nervousness
+- Our App is meant to allow students to take a good look at their notes while giving a presentations  
