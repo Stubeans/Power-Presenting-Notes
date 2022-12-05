@@ -277,6 +277,16 @@ def inputWindow(file, settings):
                 notes[note1] = notes[note2]
                 notes[note2] = temp
                 overWriteFile(file, notes)
+                noteCounter = note1
+                window['NoteCount'].update("Note " + str(noteCounter + 1))
+                title = notes[noteCounter][0]
+                title = title.replace('\n', '')
+                window['title'].update(title)
+                bodyStr = ""
+                for x in range(len(notes[noteCounter])-1):
+                    bodyStr += notes[noteCounter][x+1]
+                window['TextInput'].update(bodyStr)
+
 
     window.close()
 
