@@ -230,7 +230,7 @@ def inputWindow(file):
             notes = readFromFile(file)
             note1 = int(values['note1']) - 1
             note2 = int(values['note2']) - 1
-            if(note1 > len(notes) - 1 or note2 > len(notes) - 1 or note1 < 1 or note2 < 1):
+            if(note1 > len(notes) - 1 or note2 > len(notes) - 1 or note1 < 0 or note2 < 0):
                 print("Not valid note numbers")
             else:
                 temp = notes[note1]
