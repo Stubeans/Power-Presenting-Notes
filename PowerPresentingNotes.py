@@ -93,10 +93,9 @@ def mainMenu(settings):
     # All the stuff inside your window.
     layout = [  
         [sg.Menu([['&File', []], ['&Edit', ['&Options'], ],['&Help', '&About...'],])],
-        [sg.Text('Welcome to Power Presenting Notes!', text_color="Black")],
+        [sg.Image(r'C:\Users\playe\Project\Power-Presenting-Notes\SmallPPN.png'), sg.Text('Welcome to Power Presenting Notes!', text_color="Black")],
         [sg.Button('Start')],
         [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
-    
         [sg.Sizegrip()]]
             
     # Create the Window
@@ -293,7 +292,7 @@ def outputWindow(file, settings):
 
     # All the stuff inside your window.
     layout = [  [sg.Text('NOTES:', key="title"), sg.Push(), sg.Text('Note 1', key='NoteCount')],
-                [sg.Button('<-'), sg.Text(size=(50, 20), key="body", background_color="light gray"), sg.Button('->')],
+                [sg.Button('<-'), sg.Text(size=(50, 20), key="body", background_color="#f2f2f2", text_color="black"), sg.Button('->')],
                 [sg.Button('Return'), sg.Button('Opacity'), sg.Push(), sg.Button('Close')],
                 [sg.Sizegrip()]]
 
