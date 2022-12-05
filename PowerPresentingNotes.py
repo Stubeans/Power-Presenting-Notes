@@ -8,7 +8,7 @@ from os import path
 SETTINGS_FILE = 'settings_file.cfg'
 
 #default settings
-DEFAULT_SETTINGS = {'dFONT': 'Courier' , 'fontsize': 8 , 'theme': 'Reddit', 'timer' : '100'}
+DEFAULT_SETTINGS = {'dFONT': 'Courier' , 'fontsize': 10 , 'theme': 'Reddit', 'timer' : '100'}
 
 # "Map" from the settings dictionary keys to the window's element keys
 SETTINGS_KEYS_TO_ELEMENT_KEYS = {'dFONT': '-FONT-', 'fontsize': '-FONT_SIZE-' , 'theme': '-THEME-', 'timer' : '-TIMER-'}
