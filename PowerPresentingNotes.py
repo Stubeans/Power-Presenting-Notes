@@ -104,8 +104,8 @@ def mainMenu(settings):
     layout = [  
         [sg.Menu([['&File', []], ['&Edit', ['&Options'], ],['&Help', '&About...'],])],
         [sg.Image(r'PPN.png'), sg.Text('Welcome to Power Presenting Notes!         ',font=('Arial', 15, 'bold'), text_color="Black")],
-        [sg.Button('Start')],
-        [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
+        [sg.InputText(size=(20), key='fileName'), sg.Button('New File')],
+        [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Start")],
         [sg.Sizegrip()]]
             
     # Create the Window
@@ -337,6 +337,9 @@ def main(file):
     window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
 
     while True:             # Event Loop
+
+        isException = False
+
         if window is None:
             window = mainMenu(settings)
 
@@ -351,13 +354,30 @@ def main(file):
                 window = None
                 save_settings(SETTINGS_FILE, settings, values)
 
-        if event == 'Start':
-            window.close()
-            inputWindow(file, settings)
+        if event == 'New File':
+            try:
+                clearFile(values['fileName'])
+                notes = [["Default Title\n", "First Line"]]
+                overWriteFile(values['fileName'], notes)
+                window.close()
+                inputWindow(values['fileName'], settings)
+            except Exception as e:
+                sg.popup_quick_message(f'Not a valid fileName...', keep_on_top=True, background_color='red', text_color='white')
 
-        if event == 'Submit':
-            window.close()
-            inputWindow(values['-IN-'], settings)
+        if event == 'Start':
+            try:
+                notes = readFromFile(values['-IN-'])
+                notes[0][0]
+                isException = False
+            except Exception as e:
+                isException = True
+                sg.popup_quick_message(f'exception {e}', 'No settings file found...', keep_on_top=True, background_color='red', text_color='white')
+                window.close()
+                main(file)
+            if(isException == False):
+                window.close()
+                inputWindow(values['-IN-'], settings)
+
 
         
 
