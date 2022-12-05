@@ -138,7 +138,7 @@ def create_settings_window(settings):
                 [sg.Text('             '),sg.CB('Bold', key='-bold-'),
                 sg.CB('Italics', key='-italics-'),
                 sg.CB('Underline', key='-underline-')],
-                [TextLabel('Opacity'), sg.Slider(range=(0,10), default_value=0, size=(15,15), orientation='horizontal', key='-SLIDER-')],
+                #[TextLabel('Opacity'), sg.Slider(range=(0,10), default_value=0, size=(15,15), orientation='horizontal', key='-SLIDER-')],
                 [TextLabel('Timer'),sg.Input(key='-TIMER-')],
                 [TextLabel('Theme'),sg.Combo(themeList, size=(20, 20), key='-THEME-')],
                 [sg.Button('Save'), sg.Button('Exit')]
