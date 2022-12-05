@@ -110,7 +110,7 @@ def TextLabel(text):
 
 # This function handles the setting of user preferences
 def create_settings_window(settings):
-    #sg.theme(settings['theme'])
+    sg.theme(settings['theme'])
 
     #selections in options menu
     fontList = ['Arial', 'Calibri', 'Courier', 'Georgia', 'Modern', 'Terminal', 'Wingdings']
@@ -237,7 +237,7 @@ def inputWindow(file, settings):
             window['TextInput'].update(bodyStr)
         elif event == ' Return ': # Returns you to the previous screen
             window.close()
-            mainMenu(settings)
+            main()
         elif event == "Opacity": # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
