@@ -4,7 +4,8 @@ from json import (load as jsonload, dump as jsondump)
 from os import path
 
 # creates the settings file
-SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
+# SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
+SETTINGS_FILE = 'settings_file.cfg'
 
 #default settings
 DEFAULT_SETTINGS = {'dFONT': 'Courier' , 'fontsize': 8 , 'theme': 'Reddit', 'timer' : '100'}
