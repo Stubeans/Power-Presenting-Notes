@@ -32,7 +32,6 @@ def save_settings(settings_file, settings, values):
     sg.popup('Settings saved')
 
 
-## Method to write to file 
 # Takes in a fileName (Text file needs to be in the same file header as this .py file)
 # A title (type String), and a body (stype String) and adds them to the end of the txt file including necessary formatting
 def writeToFile(fileName, title, body):
@@ -42,7 +41,6 @@ def writeToFile(fileName, title, body):
     f.write(body + "\n")
     f.close()
 
-## Method to read to file 
 # Takes in a fileName and returns a formatting List in the following format:
 # List[Note][X] where X = 0 for Title | 1-n for Body strings
 def readFromFile(fileName):
