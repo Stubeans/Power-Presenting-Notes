@@ -7,7 +7,7 @@ from os import path
 SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
 
 #default settings
-DEFAULT_SETTINGS = {'dFONT': 'Courier' , 'fontsize': 8 , 'theme': 'Dark', 'timer' : '100'}
+DEFAULT_SETTINGS = {'dFONT': 'Courier' , 'fontsize': 8 , 'theme': 'Reddit', 'timer' : '100'}
 
 # "Map" from the settings dictionary keys to the window's element keys
 SETTINGS_KEYS_TO_ELEMENT_KEYS = {'dFONT': '-FONT-', 'fontsize': '-FONT_SIZE-' , 'theme': '-THEME-', 'timer' : '-TIMER-'}
@@ -103,7 +103,7 @@ def mainMenu(settings):
     # All the stuff inside your window.
     layout = [  
         [sg.Menu([['&File', []], ['&Edit', ['&Options'], ],['&Help', '&About...'],])],
-        [sg.Image(r'SmallPPN.png'), sg.Text('Welcome to Power Presenting Notes!',font=('Arial', 15, 'bold'), text_color="Black")],
+        [sg.Image(r'PPN.png'), sg.Text('Welcome to Power Presenting Notes!         ',font=('Arial', 15, 'bold'), text_color="Black")],
         [sg.Button('Start')],
         [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
         [sg.Sizegrip()]]
@@ -124,7 +124,7 @@ def create_settings_window(settings):
 
     #selections in dropdown menus
     fontList = ['Arial', 'Calibri', 'Courier', 'Georgia', 'Modern', 'Terminal']
-    themeList = ['BrightColors', 'Dark', 'Tan', 'Green', 'BluePurple', 'DarkTeal6']
+    themeList = ['BrightColors', 'Dark', 'Tan', 'Green', 'BluePurple', 'DarkTeal6', 'Reddit']
 
     #puts all of the font settings into one variable then changes the font with it
     FontVar = (settings['dFONT']),settings['fontsize']
