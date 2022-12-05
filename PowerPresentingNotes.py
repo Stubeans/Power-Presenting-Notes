@@ -112,7 +112,7 @@ def TextLabel(text):
 
 # This function handles the setting of user preferences
 def create_settings_window(settings):
-    #sg.theme(settings['theme'])
+    sg.theme(settings['theme'])
 
     #selections in options menu
     fontList = ['Arial', 'Calibri', 'Courier', 'Georgia', 'Modern', 'Terminal', 'Wingdings']
