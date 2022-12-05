@@ -22,3 +22,4 @@ To run the current application and access its graphical interface access your gi
 ```
 py GuiTest.py
 ```
+To run the .exe file, navigate to the dist file located in root, and then execute the .exe file

@@ -194,7 +194,13 @@ def inputWindow(file, settings):
         bodyStr += notes[0][x+1]
     window['TextInput'].update(bodyStr)
 
-    
+    def InputWrite(): # Helper function that saves the current note to the file ( denoted: file, type string )
+        notes = readFromFile(file)
+        title = values['title']
+        title = title.replace('\n', '')
+        newLine = [title + "\n", values['TextInput'] + "\n"]
+        notes[noteCounter] = newLine
+        overWriteFile(file, notes)
     
     # Event Loop to process "events" and get the "values" of the inputs
     while True:
@@ -205,18 +211,7 @@ def inputWindow(file, settings):
             create_settings_window(settings)
             #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
         elif event == '  Save  ': # saves the value in the text inputs into the current file
-            print("The note before saving looks like: ")
-            print(notes)
-            print('You entered Title: ' + values['title'] + ' and contents: ' + values['TextInput'])
-            notes = readFromFile(file)
-            title = values['title']
-            title = title.replace('\n', '')
-            newLine = [title + "\n", values['TextInput'] + "\n"]
-            notes[noteCounter] = newLine
-            print("The note after saving looks like: ")
-            print(notes)
-            overWriteFile(file, notes)
-            print("done!")
+            InputWrite()
         elif event == 'Add Note': # Adds a note to the .txt file, while moving the user to the new note inside the app
             writeToFile(file, "default title", "default body")
             notes = readFromFile(file)
@@ -229,14 +224,17 @@ def inputWindow(file, settings):
             window['TextInput'].update(bodyStr)
         elif event == ' Return ': # Returns you to the previous screen
             window.close()
-            main()
+            main(file)
         elif event == "Opacity": # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
         elif event == 'Present': # Presents the notes by opening the output window
+            InputWrite()
             window.close()
             outputWindow(file, settings)
         elif event == '<-': # reduces the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
+            InputWrite()
+            notes = readFromFile(file)
             if(noteCounter > 0):
                 noteCounter = noteCounter - 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
@@ -248,6 +246,8 @@ def inputWindow(file, settings):
                     bodyStr += notes[noteCounter][x+1]
                 window['TextInput'].update(bodyStr)
         elif event == '->': # increases the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
+            InputWrite()
+            notes = readFromFile(file)
             if(noteCounter < len(notes)-1):
                 noteCounter = noteCounter + 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
@@ -332,9 +332,8 @@ def outputWindow(file, settings):
                 window['body'].update(bodyStr)
 
     window.close()
-
-# Main event loop   
-def main():
+    
+def main(file):
     window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
 
     while True:             # Event Loop
@@ -354,7 +353,7 @@ def main():
 
         if event == 'Start':
             window.close()
-            inputWindow("myfile.txt", settings)
+            inputWindow(file, settings)
 
         if event == 'Submit':
             window.close()
@@ -366,4 +365,4 @@ def main():
     window.close()
 
 
-main()
+main("myfile.txt")
