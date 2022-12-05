@@ -1,0 +1,32 @@
+$S$
+Introduction
+ - Brief story about PPN
+ - Why PPN is relevant
+ - Etc.
+$S$
+Requirements
+ REQUIREMENTS:
+    - Write
+    - Read
+    - Edit
+    - Opacity
+    - Etc.
+$S$
+The Plan
+ - 1
+ - 2
+ - 3
+ - 4
+ - 5
+$S$
+The App
+ - Notes
+ - Opacity
+ - Present
+$S$
+Project Goals
+Goal 1: Present Notes
+Goal 2: Add new functionality like,
+	Font, Font Size, Text Size
+Goal 3: Add Speech recognition/Docx file import
+Goal 4: Fix Theme Implementation

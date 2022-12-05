@@ -4,7 +4,7 @@ from json import (load as jsonload, dump as jsondump)
 from os import path
 
 SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
-DEFAULT_SETTINGS = {'dFONT': 'Courier' , 'fontsize': 8 , 'theme': 'Dark', 'timer' : '100'}
+DEFAULT_SETTINGS = {'dFONT': 'Courier' , 'fontsize': 8 , 'theme': 'Reddit', 'timer' : '100'}
 # "Map" from the settings dictionary keys to the window's element keys
 SETTINGS_KEYS_TO_ELEMENT_KEYS = {'dFONT': '-FONT-', 'fontsize': '-FONT_SIZE-' , 'theme': '-THEME-', 'timer' : '-TIMER-'}
 
@@ -114,7 +114,7 @@ def create_settings_window(settings):
 
     #selections in options menu
     fontList = ['Arial', 'Calibri', 'Courier', 'Georgia', 'Modern', 'Terminal', 'Wingdings']
-    themeList = ['Default', 'Dark', 'Tan', 'Green', 'BluePurple']
+    themeList = ['Default', 'Dark', 'Tan', 'Green', 'BluePurple', 'Reddit']
 
     FontVar = (settings['dFONT']),settings['fontsize']
     sg.set_options(font=FontVar)
@@ -133,7 +133,7 @@ def create_settings_window(settings):
         [sg.Text("Select Font"),sg.Push(),(sg.Combo(font_selections, enable_events=True, key='-FONTS-', default_value= 'Font'))],
         [sg.Text('Font Size'), sg.Push(),(sg.Combo(font_size, enable_events=True, key='-FONT SIZE-', default_value= '1'))],
         [sg.Text('Timer'), sg.Push(),(sg.Combo(timer_selections, enable_events=True, key='-TIMER-', default_value= '1'))], 
-        [sg.Text('Theme'), sg.Push(),(sg.Combo(theme_selections, enable_events=True, key='-THEME-', default_value= 'reddit'))], 
+        [sg.Text('Theme'), sg.Push(),(sg.Combo(theme_selections, enable_events=True, key='-THEME-', default_value= 'Reddit'))], 
         [sg.Text('Opacity'), sg.Push(),(sg.Combo(opacity_selections, enable_events=True, key='-OPACITY-', default_value= '1'))], 
         [sg.Text('Speech to Text'), sg.Push(),(sg.Combo(speechToText_selections, enable_events=True, key='-SPEECH TO TEXT-', default_value= 'Disabled'))],
         [sg.Text('Alignment')],
@@ -202,7 +202,13 @@ def inputWindow(file, settings):
         bodyStr += notes[0][x+1]
     window['TextInput'].update(bodyStr)
 
-    
+    def InputWrite(): # Helper function that saves the current note to the file ( denoted: file, type string )
+        notes = readFromFile(file)
+        title = values['title']
+        title = title.replace('\n', '')
+        newLine = [title + "\n", values['TextInput'] + "\n"]
+        notes[noteCounter] = newLine
+        overWriteFile(file, notes)
     
     # Event Loop to process "events" and get the "values" of the inputs
     while True:
@@ -213,18 +219,7 @@ def inputWindow(file, settings):
             create_settings_window(settings)
             #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
         elif event == '  Save  ': # saves the value in the text inputs into the current file
-            print("The note before saving looks like: ")
-            print(notes)
-            print('You entered Title: ' + values['title'] + ' and contents: ' + values['TextInput'])
-            notes = readFromFile(file)
-            title = values['title']
-            title = title.replace('\n', '')
-            newLine = [title + "\n", values['TextInput'] + "\n"]
-            notes[noteCounter] = newLine
-            print("The note after saving looks like: ")
-            print(notes)
-            overWriteFile(file, notes)
-            print("done!")
+            InputWrite()
         elif event == 'Add Note': # Adds a note to the .txt file, while moving the user to the new note inside the app
             writeToFile(file, "default title", "default body")
             notes = readFromFile(file)
@@ -237,14 +232,17 @@ def inputWindow(file, settings):
             window['TextInput'].update(bodyStr)
         elif event == ' Return ': # Returns you to the previous screen
             window.close()
-            main()
+            main(file)
         elif event == "Opacity": # Runs through fade options on a button loop
             window.set_alpha(transparencyOptions[counter%3])
             counter += 1
         elif event == 'Present': # Presents the notes by opening the output window
+            InputWrite()
             window.close()
             outputWindow(file, settings)
         elif event == '<-': # reduces the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
+            InputWrite()
+            notes = readFromFile(file)
             if(noteCounter > 0):
                 noteCounter = noteCounter - 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
@@ -256,6 +254,8 @@ def inputWindow(file, settings):
                     bodyStr += notes[noteCounter][x+1]
                 window['TextInput'].update(bodyStr)
         elif event == '->': # increases the noteCounter by 1, and updates the NoteCount, Title and Body fields accordingly
+            InputWrite()
+            notes = readFromFile(file)
             if(noteCounter < len(notes)-1):
                 noteCounter = noteCounter + 1
                 window['NoteCount'].update("Note " + str(noteCounter + 1))
@@ -341,7 +341,7 @@ def outputWindow(file, settings):
 
     window.close()
     
-def main():
+def main(file):
     window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
 
     while True:             # Event Loop
@@ -361,7 +361,7 @@ def main():
 
         if event == 'Start':
             window.close()
-            inputWindow("myfile.txt", settings)
+            inputWindow(file, settings)
 
         if event == 'Submit':
             window.close()
@@ -372,4 +372,4 @@ def main():
     window.close()
 
 
-main()
+main("myfile.txt")
