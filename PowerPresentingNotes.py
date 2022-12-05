@@ -103,7 +103,7 @@ def mainMenu(settings):
     # All the stuff inside your window.
     layout = [  
         [sg.Menu([['&File', []], ['&Edit', ['&Options'], ],['&Help', '&About...'],])],
-        [sg.Image(r'C:\Users\playe\Project\Power-Presenting-Notes\SmallPPN.png'), sg.Text('Welcome to Power Presenting Notes!',font=('Arial', 15, 'bold'), text_color="Black")],
+        [sg.Image(r'SmallPPN.png'), sg.Text('Welcome to Power Presenting Notes!',font=('Arial', 15, 'bold'), text_color="Black")],
         [sg.Button('Start')],
         [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
         [sg.Sizegrip()]]
@@ -207,6 +207,13 @@ def inputWindow(file, settings):
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
             break
+        if event in ('Options'):
+            event, values = create_settings_window(settings).read(close=True)
+            if event == 'Save':
+                window.close()
+                save_settings(SETTINGS_FILE, settings, values)
+                main("myfile.txt")
+        
         elif event == 'Options':
             create_settings_window(settings)
             #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
