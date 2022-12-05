@@ -138,7 +138,7 @@ def create_settings_window(settings):
                 [sg.Text('             '),sg.CB('Bold', key='-bold-'),
                 sg.CB('Italics', key='-italics-'),
                 sg.CB('Underline', key='-underline-')],
-                [TextLabel('Opacity'), sg.Slider(range=(0,10), default_value=0, size=(15,15), orientation='horizontal', key='-SLIDER-')],
+                #[TextLabel('Opacity'), sg.Slider(range=(0,10), default_value=0, size=(15,15), orientation='horizontal', key='-SLIDER-')],
                 [TextLabel('Timer'),sg.Input(key='-TIMER-')],
                 [TextLabel('Theme'),sg.Combo(themeList, size=(20, 20), key='-THEME-')],
                 [sg.Button('Save'), sg.Button('Exit')]
@@ -207,6 +207,13 @@ def inputWindow(file, settings):
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Close': # if user closes window or clicks cancel
             break
+        if event in ('Options'):
+            event, values = create_settings_window(settings).read(close=True)
+            if event == 'Save':
+                window.close()
+                save_settings(SETTINGS_FILE, settings, values)
+                main("myfile.txt")
+        
         elif event == 'Options':
             create_settings_window(settings)
             #window = sg.Window("Options Window", options_menu_layout, icon="PPN.ico", keep_on_top = True) 
