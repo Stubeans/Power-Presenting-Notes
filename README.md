@@ -23,3 +23,7 @@ To run the current application and access its graphical interface access your gi
 py GuiTest.py
 ```
 To run the .exe file, navigate to the dist file located in root, and then execute the .exe file
+
+## Library License
+
+The PySimpleGui uses a GNU LESSER GENERAL PUBLIC LICENSE Version 3, it can be found in the main directory, as pySimpleGuiLicense.txt

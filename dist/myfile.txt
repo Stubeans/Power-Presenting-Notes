@@ -1,9 +1,7 @@
 $S$
-Second note!
-this is the second note!
-testing testing one two three!
-Update
-edit
+Note 1
+I would like to speak about the meaning of life.
+The meaning of life is 42.
 $S$
 Second note!
 this is the second note!
